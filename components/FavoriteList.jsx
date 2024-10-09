@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import CardList from './Atoms/CardList';
 import { useFavorites } from './Redux/FavoriteContext';
-
-export default function FavoriteList() {
+import CardList from './Atoms/CardList';
+export default function FavoriteList({ navigation }) {
   const { favorites, toggleFavorite, loadFavorites } = useFavorites();
 
   useFocusEffect(
@@ -19,7 +18,7 @@ export default function FavoriteList() {
       productName={item.artName}
       imageUrl={item.image}
       productPrice={`$${item.price}` || 'No price available'}
-      onPress={() => alert(`${item.productName} clicked!`)}
+      onPress={() => navigation.navigate('DetailArt', { item })} 
       isFavorite={true}
       onFavoritePress={() => toggleFavorite(item)}
     />

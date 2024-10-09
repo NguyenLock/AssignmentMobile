@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import CardList from './Atoms/CardList';
 import { useFavorites } from './Redux/FavoriteContext';
+import CardList from './Atoms/CardList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = 'https://668d4d89099db4c579f2807a.mockapi.io/api/v1/favoritelist';
 
-export default function ListShop() {
+export default function ListShop({ navigation }) { 
   const [data, setData] = useState([]);
   const { favorites, toggleFavorite, loadFavorites } = useFavorites();
 
@@ -42,7 +42,7 @@ export default function ListShop() {
       productName={item.artName}
       imageUrl={item.image}
       productPrice={`$${item.price}`}
-      onPress={() => alert(`${item.artName} clicked!`)}
+      onPress={() => navigation.navigate('DetailArt', { item })} 
       isFavorite={favorites.some(fav => fav.id === item.id)}
       onFavoritePress={() => toggleFavorite(item)}
     />
