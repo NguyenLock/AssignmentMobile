@@ -16,9 +16,9 @@ export default function FavoriteList() {
   const renderItem = ({ item }) => (
     <CardList
       id={item.id}
-      productName={item.productName}
-      imageUrl={item.imageUrl}
-      productPrice={item.productPrice || 'No price available'}
+      productName={item.artName}
+      imageUrl={item.image}
+      productPrice={`$${item.price}` || 'No price available'}
       onPress={() => alert(`${item.productName} clicked!`)}
       isFavorite={true}
       onFavoritePress={() => toggleFavorite(item)}
