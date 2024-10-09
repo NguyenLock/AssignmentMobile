@@ -4,10 +4,27 @@ import { View, Text, Image, StyleSheet, FlatList } from 'react-native';
 export default function DetailArt({ route }) {
   const { item } = route.params;
 
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return (
+      <Text style={styles.stars}>
+        {'★'.repeat(fullStars)}
+        {halfStar ? '½' : ''}
+        {'☆'.repeat(emptyStars)}
+      </Text>
+    );
+  };
+
   const renderComment = ({ item }) => (
     <View style={styles.comment}>
       <Text style={styles.commentName}>{item.name}</Text>
-      <Text style={styles.commentRating}>Rating: {item.rating}⭐</Text>
+      <View style={styles.ratingContainer}>
+        {renderStars(item.rating)}
+        <Text style={styles.commentRating}>{item.rating.toFixed(1)}</Text>
+      </View>
       <Text>{item.comment}</Text>
     </View>
   );
@@ -119,6 +136,16 @@ const styles = StyleSheet.create({
   commentName: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  stars: {
+    fontSize: 16,
+    color: '#FFD700', // Gold color for stars
+    marginRight: 5,
   },
   commentRating: {
     fontSize: 14,
