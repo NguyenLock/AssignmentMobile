@@ -2,7 +2,9 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function CardList({id, productName, imageUrl, productPrice, onPress, isFavorite, onFavoritePress}) {
+export default function CardList({id, productName, imageUrl, productPrice, onPress, isFavorite, onFavoritePress, limitedTimeDeal, glassSurface}) {
+  const discountedPrice = limitedTimeDeal ? (productPrice * (1 - limitedTimeDeal)).toFixed(2) : null;
+
   return (
    <View style={styles.card}>
     <View style={styles.imageContainer}>
@@ -14,9 +16,19 @@ export default function CardList({id, productName, imageUrl, productPrice, onPre
     <Text style={styles.productName}>
         {productName}
     </Text>
-    <Text style={styles.price}>
-        {productPrice}
-    </Text>
+    <View style={styles.priceContainer}>
+      {limitedTimeDeal ? (
+        <>
+          <Text style={styles.originalPrice}>${productPrice}</Text>
+          <Text style={styles.discountedPrice}>${discountedPrice}</Text>
+        </>
+      ) : (
+        <Text style={styles.price}>${productPrice}</Text>
+      )}
+    </View>
+    {glassSurface && (
+      <Text style={styles.glassSurface}>Glass Surface: YES</Text>
+    )}
     <TouchableOpacity style={styles.detailButton} onPress={onPress}>
         <Text style={styles.buttonText}>Detail</Text>
     </TouchableOpacity>
@@ -60,11 +72,33 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         marginVertical:10
     },
+    priceContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 5,
+    },
     price:{
         fontSize:15,
         fontWeight:'bold',
         color:'black',
         marginBottom:10,
+    },
+    originalPrice: {
+      fontSize: 15,
+      fontWeight: 'bold',
+      color: 'gray',
+      textDecorationLine: 'line-through',
+      marginRight: 5,
+    },
+    discountedPrice: {
+      fontSize: 15,
+      fontWeight: 'bold',
+      color: 'red',
+    },
+    glassSurface: {
+      fontSize: 14,
+      color: 'green',
+      marginBottom: 5,
     },
     detailButton:{
         backgroundColor:"#f4ce14",

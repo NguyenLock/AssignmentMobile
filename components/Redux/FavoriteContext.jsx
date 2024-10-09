@@ -6,10 +6,12 @@ const FavoriteContext = createContext();
 export const FavoriteProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
 
+  
   useEffect(() => {
     loadFavorites();
   }, []);
 
+ 
   const loadFavorites = async () => {
     try {
       const storedFavorites = await AsyncStorage.getItem('favorites');
@@ -21,6 +23,7 @@ export const FavoriteProvider = ({ children }) => {
     }
   };
 
+  
   const saveFavorites = async (newFavorites) => {
     try {
       await AsyncStorage.setItem('favorites', JSON.stringify(newFavorites));
@@ -30,6 +33,7 @@ export const FavoriteProvider = ({ children }) => {
     }
   };
 
+  
   const toggleFavorite = (product) => {
     const index = favorites.findIndex(fav => fav.id === product.id);
     let newFavorites;
@@ -38,11 +42,21 @@ export const FavoriteProvider = ({ children }) => {
     } else {
       newFavorites = [...favorites, product];
     }
-    saveFavorites(newFavorites);
+    saveFavorites(newFavorites);  
+  };
+
+  
+  const clearFavorites = async () => {
+    try {
+      await AsyncStorage.removeItem('favorites');  
+      setFavorites([]);  
+    } catch (error) {
+      console.error('Error clearing favorites', error);
+    }
   };
 
   return (
-    <FavoriteContext.Provider value={{ favorites, toggleFavorite, loadFavorites }}>
+    <FavoriteContext.Provider value={{ favorites, toggleFavorite, loadFavorites, clearFavorites }}>
       {children}
     </FavoriteContext.Provider>
   );

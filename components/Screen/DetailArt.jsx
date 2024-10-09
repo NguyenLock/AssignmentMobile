@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, FlatList } from 'react-native';
 
 export default function DetailArt({ route }) {
-  const { item } = route.params; 
+  const { item } = route.params;
 
   const renderComment = ({ item }) => (
     <View style={styles.comment}>
@@ -12,24 +12,42 @@ export default function DetailArt({ route }) {
     </View>
   );
 
-  return (
-    <View style={styles.container}>
+  const renderHeader = () => (
+    <View>
       <Image source={{ uri: item.image }} style={styles.image} />
       <Text style={styles.title}>{item.artName}</Text>
-      <Text style={styles.price}>Price: ${item.price}</Text>
+      <View style={styles.priceContainer}>
+        {item.limitedTimeDeal > 0 ? (
+          <>
+            <Text style={styles.originalPrice}>${item.price.toFixed(2)}</Text>
+            <Text style={styles.discountedPrice}>
+              ${(item.price * (1 - item.limitedTimeDeal)).toFixed(2)}
+            </Text>
+            <Text style={styles.deal}>
+              ({(item.limitedTimeDeal * 100).toFixed(0)}% off)
+            </Text>
+          </>
+        ) : (
+          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+        )}
+      </View>
       <Text style={styles.description}>{item.description}</Text>
       <Text style={styles.brand}>Brand: {item.brand}</Text>
-      {item.limitedTimeDeal > 0 && (
-        <Text style={styles.deal}>Limited Time Deal: {item.limitedTimeDeal * 100}% off</Text>
+      {item.glassSurface && (
+        <Text style={styles.glassSurface}>Glass Surface: YES</Text>
       )}
-
       <Text style={styles.commentHeader}>Comments:</Text>
-      <FlatList
-        data={item.commentArt}
-        renderItem={renderComment}
-        keyExtractor={(comment, index) => index.toString()}
-      />
     </View>
+  );
+
+  return (
+    <FlatList
+      data={item.commentArt}
+      renderItem={renderComment}
+      keyExtractor={(comment, index) => index.toString()}
+      ListHeaderComponent={renderHeader} 
+      contentContainerStyle={styles.container}
+    />
   );
 }
 
@@ -48,10 +66,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
   price: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 5,
+  },
+  originalPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textDecorationLine: 'line-through',
+    color: 'gray',
+    marginRight: 5,
+  },
+  discountedPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'red',
+    marginRight: 5,
+  },
+  deal: {
+    fontSize: 16,
+    color: 'red',
   },
   description: {
     fontSize: 16,
@@ -61,10 +100,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: 'italic',
   },
-  deal: {
+  glassSurface: {
     fontSize: 16,
-    color: 'red',
-    marginVertical: 5,
+    color: 'green',
+    marginTop: 5,
   },
   commentHeader: {
     fontSize: 18,
